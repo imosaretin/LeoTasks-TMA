@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { LoginBody, SignUpBody } from "../types/authTypes ";
+import { CustomRequest, LoginBody, SignUpBody } from "../types/authTypes ";
 import bcrypt from "bcrypt"
 import User from "../models/usermodel";
 import jwt from "jsonwebtoken"
@@ -46,8 +46,18 @@ export const login = async ( req: Request<{}, {}, LoginBody>, res: Response) => 
         console.error(error);
         res.status(500).json({message:"Server error"})    
     }
-
+    
 }
-export const checkAuth = ( req:Request, res:Response) => {
-  
+export const checkAuth = async ( req:CustomRequest, res:Response) => {
+    try {
+        const user = await User.findById(req.userId).select("-password")
+        if (!user) {
+            return res.status(401).json({message:"Invalid Token (User Not Found"})
+        }
+        res.status(200).json({message:"Authorized", user})
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({message:"Server error"})    
+        
+  }
 }
