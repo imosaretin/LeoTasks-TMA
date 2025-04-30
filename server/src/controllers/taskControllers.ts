@@ -34,7 +34,7 @@ export const getAllTasks = async ( req: CustomRequest, res:Response) => {
 
 export const updateTask = async ( req: CustomRequest, res:Response) => {
     try {
-        await Task.findByIdAndDelete(req.params.id, {state: "Completed"});
+        await Task.findByIdAndUpdate(req.params.id, {state: "Completed"});
         res.status(201).json({message:"Task updated successfully"});
     } catch (error) {
         console.error(error)
